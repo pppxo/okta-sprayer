@@ -3,13 +3,12 @@ python3 script that reads usernames from an input file and a password from the c
 
 First: pip3 install requests
 
-Use: python3 okta-sprayer.py -f [input_file] -d [domain.com] -w [wait_time_in_seconds]....then enter the password to use for the spray next
+Use: python3 okta-sprayer.py -f [input_file] -d [domain.com] - [wait_time_in_seconds]....then enter the password to use for the spray next
 
-For ease of use, put the input file in the same directory as the script and ensure each username is on its own line.
+# This fork infomation
+This version forked from https://github.com/cedowens/okta-sprayer. it was inhanced to:
+* Randomize user-agents 
+* Randomize the waiting time to be just a randome to avoid detections.
 
-The script will then perform a single check for each user in the input file with the specified password from the command line and will respond with either unsuccessful or successful. The script will wait between attempts based on the number of seconds specified by the -w argument.
-
-If performing this test for a large number of users, you may want to consider breaking the user list into smaller groups and running each group from a different source host.
-
-Note: if the script is having trouble parsing the password, surround it in single quotes (').
+It is suitable to work with IP rutation tools like AUT now.
 
