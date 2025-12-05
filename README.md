@@ -3,7 +3,7 @@ python3 script that reads usernames from an input file and a password from the c
 
 First: pip3 install requests
 
-Use: python3 okta-sprayer.py -f [input_file] -d [domain.com] - [wait_time_in_seconds]....then enter the password to use for the spray next
+Use: python3 okta-sprayer.py -f [input_file] -d [domain.com] -n [minimum wait time] -x [maximum wait time]   ... then enter the password to use for the spray next
 
 # This fork infomation
 This version forked from https://github.com/cedowens/okta-sprayer. it was inhanced to:
